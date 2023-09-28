@@ -18,25 +18,31 @@ package com.github.singlerr.encrytion.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.github.singlerr.encrytion.CryptoService;
-import com.github.singlerr.encrytion.asymmetric.rsa.RSA;
-import com.github.singlerr.encrytion.asymmetric.rsa.RSAEncryptorFactory;
-import com.github.singlerr.encrytion.asymmetric.rsa.RSAKeyGenerator;
+import com.github.singlerr.encrytion.symmetric.aes256.AES256;
+import com.github.singlerr.encrytion.symmetric.aes256.AES256EncryptorFactory;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class AsymmetricCryptoServiceBuilderTest {
+class SymmetricCryptoServiceBuilderTest {
 
     @Test
-    void build() throws Exception {
-        CryptoService service = new AsymmetricCryptoServiceBuilder(new RSA())
-                .keyGenerator(new RSAKeyGenerator())
-                .encryptorFactory(new RSAEncryptorFactory())
+    void build()
+            throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
+                    NoSuchAlgorithmException, BadPaddingException, InvalidKeySpecException, InvalidKeyException {
+        CryptoService service = new SymmetricCryptoServiceBuilder(new AES256())
+                .encryptorFactory(new AES256EncryptorFactory())
                 .build();
 
         byte[] data = "test".getBytes(StandardCharsets.UTF_8);
         byte[] encrypted = service.encrypt(data);
-
         Assertions.assertArrayEquals(data, service.decrypt(encrypted));
     }
 }
